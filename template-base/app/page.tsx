@@ -5,19 +5,30 @@ import { gsap } from 'gsap';
 import { motion, useSpring, useTransform, Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import getConfig from 'next/config';
+
+// We can read the basePath from your next.config.ts:
+const { publicRuntimeConfig } = getConfig();
+const basePath = publicRuntimeConfig?.basePath || '/nextjs-app-template';
+
+// If you prefer, you can do:
+// import getConfig from 'next/config';
+// const { basePath } = getConfig();  // If next.config exports basePath directly
 
 /** 
- * Example logos. Adjust the src to your own if needed.
+ * Example logos. 
+ * Note: We prepend `basePath` so e.g. "/nextjs-app-template/nodejs.svg"
  */
 const LOGOS = [
-  { src: '/nodejs.svg', alt: 'Node.js' },
-  { src: '/react.svg', alt: 'React' },
-  { src: '/nextjs.svg', alt: 'Next.js' },
-  { src: '/typescript.svg', alt: 'TypeScript' },
-  { src: '/tailwindcss.svg', alt: 'Tailwind CSS' },
+  { src: `${basePath}/nodejs.svg`, alt: 'Node.js' },
+  { src: `${basePath}/react.svg`, alt: 'React' },
+  { src: `${basePath}/nextjs.svg`, alt: 'Next.js' },
+  { src: `${basePath}/typescript.svg`, alt: 'TypeScript' },
+  { src: `${basePath}/tailwindcss.svg`, alt: 'Tailwind CSS' },
 ];
 
-const GITHUB_LOGO = '/github-mark-white.svg';
+// Similarly for GitHub logo
+const GITHUB_LOGO = `${basePath}/github-mark-white.svg`;
 
 /* 
   Framer Motion variants for a container and its child elements
@@ -75,17 +86,15 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!marqueeRef.current) return;
-
     const container = marqueeRef.current;
     const itemWidth = container.scrollWidth; // total width of the logos inside
 
-    // Animate from right edge to negative offset
     gsap.fromTo(
       container,
       { x: window.innerWidth },
       {
         x: -itemWidth,
-        duration: 20, // Adjust speed here
+        duration: 20,
         ease: 'none',
         repeat: -1,  // infinite
       }
@@ -170,7 +179,6 @@ export default function LandingPage() {
             sm:p-10 md:p-12
             bg-transparent
           "
-          // Container variants for staggered reveal
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -206,7 +214,13 @@ export default function LandingPage() {
                 hover:scale-105
               "
             >
-              <Image src={GITHUB_LOGO} alt="GitHub Logo" width={20} height={20} />
+              <Image
+                src={GITHUB_LOGO}
+                alt="GitHub Logo"
+                width={20}
+                height={20}
+                unoptimized
+              />
               <span>View on GitHub</span>
             </Link>
           </motion.div>
@@ -216,10 +230,6 @@ export default function LandingPage() {
   );
 }
 
-/**
- * Single logo item at the bottom marquee.
- * We'll give it a small hover effect for fun.
- */
 function LogoItem({ logo }: { logo: { src: string; alt: string } }) {
   return (
     <motion.div
@@ -227,7 +237,17 @@ function LogoItem({ logo }: { logo: { src: string; alt: string } }) {
       whileHover={{ scale: 1.2, rotate: 5 }}
       transition={{ type: 'spring', stiffness: 150, damping: 10 }}
     >
-      <Image src={logo.src} alt={logo.alt} width={60} height={60} />
+      {/* 
+        Notice the `unoptimized` prop for the Image, 
+        plus we already have the full path (basePath + /filename).
+      */}
+      <Image
+        src={logo.src}
+        alt={logo.alt}
+        width={60}
+        height={60}
+        unoptimized
+      />
     </motion.div>
   );
 }
