@@ -2,20 +2,15 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Avoid canceling a deployment in-progress if a new one is triggered
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -51,17 +46,15 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-          # Tell setup-node where to find the lock file(s):
+          # Lockfiles are in template-base
           cache-dependency-path: |
             template-base/package-lock.json
             template-base/yarn.lock
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
-          # This injects the basePath in your next.config.js 
-          # and disables server-side image optimization.
+      # (Optional) We can remove "Setup Pages" or keep it if you want 
+      #  some config injection, but it's not strictly needed for output: 'export'.
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v5
 
       - name: Restore .next/cache
         uses: actions/cache@v4
@@ -74,9 +67,13 @@ jobs:
       - name: Install dependencies
         run: cd template-base && ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
-      - name: Build with Next.js
+      - name: Build (static export)
         run: cd template-base && ${{ steps.detect-package-manager.outputs.runner }} next build
+        # With output: 'export' in next.config, 
+        # next build automatically exports to `template-base/out`.
 
+      - name: Show contents of out (debug)
+        run: ls -la template-base/out
 
       - name: Upload artifact to Pages
         uses: actions/upload-pages-artifact@v3
