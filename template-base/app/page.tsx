@@ -5,35 +5,20 @@ import { gsap } from 'gsap';
 import { motion, useSpring, useTransform, Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import getConfig from 'next/config';
-
-// We can read the basePath from your next.config.ts:
-const { publicRuntimeConfig } = getConfig();
-const basePath = publicRuntimeConfig?.basePath || '/nextjs-app-template';
-
-// If you prefer, you can do:
-// import getConfig from 'next/config';
-// const { basePath } = getConfig();  // If next.config exports basePath directly
 
 /** 
- * Example logos. 
- * Note: We prepend `basePath` so e.g. "/nextjs-app-template/nodejs.svg"
+ * Example logos. We use relative paths as if they're in `/public` folder:
  */
 const LOGOS = [
-  { src: `${basePath}/nodejs.svg`, alt: 'Node.js' },
-  { src: `${basePath}/react.svg`, alt: 'React' },
-  { src: `${basePath}/nextjs.svg`, alt: 'Next.js' },
-  { src: `${basePath}/typescript.svg`, alt: 'TypeScript' },
-  { src: `${basePath}/tailwindcss.svg`, alt: 'Tailwind CSS' },
+  { src: '/nodejs.svg', alt: 'Node.js' },
+  { src: '/react.svg', alt: 'React' },
+  { src: '/nextjs.svg', alt: 'Next.js' },
+  { src: '/typescript.svg', alt: 'TypeScript' },
+  { src: '/tailwindcss.svg', alt: 'Tailwind CSS' },
 ];
 
-// Similarly for GitHub logo
-const GITHUB_LOGO = `${basePath}/github-mark-white.svg`;
+const GITHUB_LOGO = '/github-mark-white.svg';
 
-/* 
-  Framer Motion variants for a container and its child elements
-  to create a nice staggered reveal effect in the center content.
-*/
 const containerVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: {
@@ -59,7 +44,7 @@ const childVariants: Variants = {
 };
 
 export default function LandingPage() {
-  // 1) Mouse-Following Glow
+  // For the glow effect
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
 
@@ -72,23 +57,20 @@ export default function LandingPage() {
     return () => window.removeEventListener('mousemove', handleMove);
   }, []);
 
-  // Springs for smoother movement
   const xSpring = useSpring(mouseX, { stiffness: 20, damping: 10 });
   const ySpring = useSpring(mouseY, { stiffness: 20, damping: 10 });
 
-  // Parallax factor
   const factor = 0.1;
   const glowX = useTransform(xSpring, (val) => val * factor);
   const glowY = useTransform(ySpring, (val) => val * factor);
 
-  // 2) GSAP for Infinite Horizontal Slide at the Bottom
+  // GSAP Marquee
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!marqueeRef.current) return;
     const container = marqueeRef.current;
-    const itemWidth = container.scrollWidth; // total width of the logos inside
-
+    const itemWidth = container.scrollWidth;
     gsap.fromTo(
       container,
       { x: window.innerWidth },
@@ -96,14 +78,14 @@ export default function LandingPage() {
         x: -itemWidth,
         duration: 20,
         ease: 'none',
-        repeat: -1,  // infinite
+        repeat: -1,
       }
     );
   }, []);
 
   return (
     <main className="relative h-screen w-screen bg-black font-sans">
-      {/* 1) Mouse-following glow at z-50 */}
+      {/* Glow */}
       <motion.div
         className="
           pointer-events-none
@@ -120,7 +102,7 @@ export default function LandingPage() {
         style={{ x: glowX, y: glowY }}
       />
 
-      {/* Fancy Blog Button at the top-right */}
+      {/* Blog Button */}
       <div className="absolute top-4 right-4 z-50">
         <Link
           href="/blog"
@@ -146,7 +128,7 @@ export default function LandingPage() {
         </Link>
       </div>
 
-      {/* 3) Marquee container at the bottom */}
+      {/* Marquee */}
       <div
         className="
           absolute
@@ -169,7 +151,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* 4) Center content with advanced Framer Motion animations */}
+      {/* Center content */}
       <section className="relative z-30 flex h-full w-full flex-col items-center justify-center p-4">
         <motion.div
           className="
@@ -237,10 +219,7 @@ function LogoItem({ logo }: { logo: { src: string; alt: string } }) {
       whileHover={{ scale: 1.2, rotate: 5 }}
       transition={{ type: 'spring', stiffness: 150, damping: 10 }}
     >
-      {/* 
-        Notice the `unoptimized` prop for the Image, 
-        plus we already have the full path (basePath + /filename).
-      */}
+      {/* Important: `unoptimized` plus the direct `/nodejs.svg` path */}
       <Image
         src={logo.src}
         alt={logo.alt}
