@@ -10,11 +10,11 @@ import Link from 'next/link';
  * Example logos. We use relative paths as if they're in `/public` folder:
  */
 const LOGOS = [
-  { src: '/nodejs.svg', alt: 'Node.js' },
-  { src: '/react.svg', alt: 'React' },
-  { src: '/nextjs.svg', alt: 'Next.js' },
-  { src: '/typescript.svg', alt: 'TypeScript' },
-  { src: '/tailwindcss.svg', alt: 'Tailwind CSS' },
+  { src: 'nextjs-app-template/nodejs.svg', alt: 'Node.js' },
+  { src: 'nextjs-app-template/react.svg', alt: 'React' },
+  { src: 'nextjs-app-template/nextjs.svg', alt: 'Next.js' },
+  { src: 'nextjs-app-template/typescript.svg', alt: 'TypeScript' },
+  { src: 'nextjs-app-template/tailwindcss.svg', alt: 'Tailwind CSS' },
 ];
 
 const GITHUB_LOGO = '/github-mark-white.svg';
