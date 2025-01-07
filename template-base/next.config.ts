@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  publicRuntimeConfig: {
+    basePath: '/nextjs-app-template',
+  },
 };
 
 export default nextConfig;
