@@ -77,9 +77,6 @@ jobs:
       - name: Build with Next.js
         run: cd template-base && ${{ steps.detect-package-manager.outputs.runner }} next build
 
-      - name: Export static site
-        run: cd template-base && ${{ steps.detect-package-manager.outputs.runner }} next export
-        # This creates an `out` folder inside `template-base/out`.
 
       - name: Upload artifact to Pages
         uses: actions/upload-pages-artifact@v3
