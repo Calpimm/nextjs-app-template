@@ -194,7 +194,7 @@ export default function LandingPage() {
             variants={childVariants}
           >
             <Link
-              href="https://github.com/YourGitHubUser/your-repo"
+              href="https://github.com/Calpimm/nextjs-app-template"
               target="_blank"
               className="
                 flex items-center gap-2
