@@ -51,6 +51,10 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          # Tell setup-node where to find the lock file(s):
+          cache-dependency-path: |
+            template-base/package-lock.json
+            template-base/yarn.lock
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
